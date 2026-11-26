@@ -9,8 +9,8 @@ Problem-independent orchestration for mathematical obligations, authenticated ev
 - [Synthetic example](examples/obligation.demo.json)
 - [Validation tests](tests/test_schema.py)
 
-This is a proposal/schema foundation, not an operating certification engine. No RH or Yang–Mills claim is certified. No CI workflows are enabled.
+MC-002 adds a provisional dependency planner; see [planner contract](docs/dependency-planner.md). This is not an operating certification engine. No RH or Yang–Mills claim is certified. No CI workflows are enabled.
 
 Local schema tests: `python -m pip install -r requirements-dev.txt` then `python -m unittest discover -s tests -v`.
 
-Next: MC-002 — validated dependency graph, cycle rejection, deterministic affected-frontier planning, and explicit missing/stale evidence states.
+Next: MC-003 — content-addressed evidence, canonical fingerprints and authenticated receipts.
