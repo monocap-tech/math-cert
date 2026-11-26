@@ -66,6 +66,33 @@ def _read_file(root, path):
         raise BackendError('cannot read source') from exc
 
 
+def _check_source_closure(root, declared, sources):
+    """Reject additional local Lean source files and check every pinned one."""
+    identities = {(s['repository'], s['commit']) for s in declared}
+    if len(identities) != 1:
+        raise BackendError('one pinned repository revision required')
+    paths = {}
+    for source in declared:
+        path = _relative_path(source['path'])
+        if str(path) in paths:
+            raise BackendError('duplicate source path')
+        paths[str(path)] = source
+    present = set()
+    for directory, dirs, files in os.walk(root, followlinks=False):
+        for name in dirs + files:
+            if (Path(directory) / name).is_symlink():
+                raise BackendError('symlink in source tree')
+        for name in files:
+            if name.endswith('.lean'):
+                present.add((Path(directory) / name).relative_to(root).as_posix())
+    if present != set(paths):
+        raise BackendError('untracked or missing Lean source in working tree')
+    for name, source in paths.items():
+        key = (source['repository'], source['commit'], name)
+        if key not in sources or _read_file(root, PurePosixPath(name)) != sources[key]:
+            raise BackendError('working source differs from checked inventory')
+
+
 class SubprocessRunner:
     """Owner-provided sandbox command. No ambient environment or shell.
 
@@ -128,9 +155,8 @@ class LeanBackend:
             raise BackendError('entrypoint requires one pinned source')
         source = entrypoints[0]
         key = (source['repository'], source['commit'], source['path'])
-        disk_bytes = _read_file(root, path)
-        if key not in sources or disk_bytes != sources[key]:
-            raise BackendError('working source differs from checked inventory')
+        _check_source_closure(root, manifest['sources'], sources)
+        disk_bytes = sources[key]
         fp = fingerprint(manifest, sources, binary_bytes, environment, policy)
         if not hasattr(runner, 'run') or getattr(runner, 'environment_bytes', None) != environment:
             raise BackendError('trusted runner environment does not match pin')

@@ -74,6 +74,27 @@ class TestLeanBackend(unittest.TestCase):
             self.run_backend(runner)
         self.assertEqual(runner.calls, [])
 
+    def test_unpinned_lean_file_rejected_before_run(self):
+        (self.root / 'Hidden.lean').write_text('theorem hidden : True := by trivial\n')
+        runner = FakeRunner()
+        with self.assertRaises(BackendError):
+            self.run_backend(runner)
+        self.assertEqual(runner.calls, [])
+
+    def test_all_declared_lean_files_must_match_disk(self):
+        other = self.root / 'Imported.lean'
+        other.write_bytes(b'theorem imported : True := by trivial\n')
+        source = copy.deepcopy(self.manifest['sources'][0])
+        source['path'] = 'Imported.lean'
+        source['digest'] = digest_bytes(other.read_bytes())
+        self.manifest['sources'].append(source)
+        key = (source['repository'], source['commit'], source['path'])
+        self.sources[key] = other.read_bytes()
+        self.assertEqual(self.run_backend().returncode, 0)
+        other.write_bytes(b'changed')
+        with self.assertRaises(BackendError):
+            self.run_backend()
+
     def test_unapproved_policy_and_binary_rejected(self):
         runner = FakeRunner()
         self.manifest['policy']['digest'] = digest_bytes(b'producer policy')
