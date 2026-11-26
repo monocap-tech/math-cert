@@ -9,8 +9,8 @@ Problem-independent orchestration for mathematical obligations, authenticated ev
 - [Synthetic example](examples/obligation.demo.json)
 - [Validation tests](tests/test_schema.py)
 
-MC-002 adds a provisional dependency planner; see [planner contract](docs/dependency-planner.md). This is not an operating certification engine. No RH or Yang–Mills claim is certified. No CI workflows are enabled.
+MC-002 adds a provisional dependency planner; see [planner contract](docs/dependency-planner.md). MC-003 adds [candidate receipt and evidence custody](docs/certificate-registry.md). This is not an operating certification engine. No RH or Yang–Mills claim is certified. No CI workflows are enabled.
 
 Local schema tests: `python -m pip install -r requirements-dev.txt` then `python -m unittest discover -s tests -v`.
 
-Next: MC-003 — content-addressed evidence, canonical fingerprints and authenticated receipts.
+Next: MC-004 — trusted verification backend, followed by independent replay and issuer authentication. MC-003 candidate receipts provide byte integrity, not authenticated mathematical acceptance.
