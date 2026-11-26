@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "id": "DEMO.A.001",
+  "claim": {
+    "statement": "For every integer n, n + 0 = n.",
+    "domain": "Integers",
+    "hypotheses": [],
+    "conclusion": "Addition of zero preserves n.",
+    "evidence_class": "kernel_theorem",
+    "scope_limits": [
+      "Synthetic example only; no accepted certificate or executable source is claimed."
+    ]
+  },
+  "dependencies": [],
+  "sources": [
+    {
+      "repository": "example/demo",
+      "commit": "0000000000000000000000000000000000000000",
+      "path": "Demo.lean",
+      "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "verification": {
+    "backend": "lean4",
+    "backend_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "environment_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "entrypoint": "Demo.add_zero"
+  },
+  "policy": {
+    "id": "demo-policy",
+    "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "outputs": [
+    "kernel-log",
+    "axiom-report"
+  ]
+}
