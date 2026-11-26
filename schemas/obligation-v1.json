@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/monocap-tech/math-cert/schemas/obligation-v1.json",
+  "title": "MathCert obligation proposal v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "claim",
+    "dependencies",
+    "sources",
+    "verification",
+    "policy",
+    "outputs"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "statement",
+        "domain",
+        "hypotheses",
+        "conclusion",
+        "evidence_class",
+        "scope_limits"
+      ],
+      "properties": {
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hypotheses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "conclusion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_class": {
+          "enum": [
+            "kernel_theorem",
+            "exact_certificate",
+            "interval_certificate",
+            "source_audit",
+            "semantic_review"
+          ]
+        },
+        "scope_limits": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "receipt_digest",
+          "required_claim_digest"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"
+          },
+          "receipt_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "required_claim_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "repository",
+          "commit",
+          "path",
+          "digest"
+        ],
+        "properties": {
+          "repository": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+          },
+          "commit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "backend",
+        "backend_digest",
+        "environment_digest",
+        "entrypoint"
+      ],
+      "properties": {
+        "backend": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"
+        },
+        "backend_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "environment_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "entrypoint": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "digest"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}
